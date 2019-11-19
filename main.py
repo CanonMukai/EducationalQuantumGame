@@ -1,10 +1,11 @@
-# -*- coding:utf-8 -*- 
+# -*- coding:utf-8 -*-
 import pygame
 from pygame.locals import *
 import pygame.mixer
 import sys
 from qiskit import *
 import time
+import random
 
 # input: int (0 or 1)
 # output: int (0 or 1)
@@ -21,7 +22,6 @@ def x_gate(A):
    job = execute(qc, backend, shots=1000)
    result = job.result()
    count =result.get_counts()
-   qc.draw(output='mpl')
    answer = list(count.keys())[0]
    a=int(answer[0])
    return a
@@ -37,16 +37,16 @@ def evaluate(question, answer):
             return True
         else:
             return False
-
+        
 def CircleOrBatsu(is_correct, screen):
-    if is_correct:
-        pygame.draw.circle(screen, (255, 0, 0), (800, 200), 10, 3)
-    else:
-        pygame.draw.line(screen, (0, 0, 255), (800, 200), (850, 250), 10)
-        pygame.draw.line(screen, (0, 0, 255), (850, 200), (800, 250), 10)
-    pygame.display.update()
-    time.sleep(1)
-
+   if is_correct:
+       pygame.draw.circle(screen, (255, 0, 0), (975, 260), 170, 30)
+   else:
+       pygame.draw.line(screen, (0, 0, 255), (825, 115), (1125, 415), 50)
+       pygame.draw.line(screen, (0, 0, 255), (825, 415), (1125, 115), 50)
+   pygame.display.update()
+   time.sleep(1)
+   
 class Score():
     def __init__(self, x, y):
         self.sysfont = pygame.font.SysFont(None, 50)
@@ -65,10 +65,14 @@ class Title():
     def draw(self, screen):
         img = self.sysfont.render("Qiskit Shooting Game", True, (0, 0, 0))
         screen.blit(img, (self.x, self.y))
-
+        
 class Picture():
     def __init__(self, file_name, x, y):
         self.image = pygame.image.load(file_name)
+        rect_bg = self.image.get_rect()
+        height = rect_bg[3]
+        width = int(height * rect_bg[2] / rect_bg[3])
+        self.image = pygame.transform.scale(self.image, (width, height))
         (self.x, self.y) = (x, y)
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
@@ -81,7 +85,7 @@ class Frame():
         pygame.draw.rect(screen, (50, 50, 50), Rect(self.x1-10, self.y0, 10, self.y1-self.y0))
         pygame.draw.rect(screen, (50, 50, 50), Rect(self.x0, self.y0, self.x1-self.x0, 10))
         pygame.draw.rect(screen, (50, 50, 50), Rect(self.x0, self.y1-10, self.x1-self.x0, 10))
-
+        
 class AnswerBox():
     def __init__(self, x0, y0):
         (self.x0, self.y0) = (x0, y0)
@@ -90,12 +94,12 @@ class AnswerBox():
             x2, y2 = self.x0 + i * 50, self.y0
             width, height = 40, 40
             pygame.draw.rect(screen, (50, 50, 50), Rect(x2, y2, width, height), 10)
-        
+            
 def main():
     pygame.init()
     screen = pygame.display.set_mode((1300, 800))
     pygame.display.set_caption('Qiskit Shooting')
-
+    
     button0 = pygame.Rect(100, 200, 200, 200)
     button1 = pygame.Rect(400, 200, 200, 200)
     font = pygame.font.SysFont(None, 25)
@@ -107,10 +111,20 @@ def main():
     frame_question = Frame(750, 70, 1200, 450)
     frame_circuit = Frame(70, 500, 1200, 750)
     answer_box = AnswerBox(850, 330)
-
+    
     question_number = 0
     answer_number = 2
-
+    
+    #問題のリスト [ [問題(qiskitに送るもの), qubitの桁数, 解答枠の数のリスト, "+"と"-"のリスト, 問題の画像] , ... ]
+    question_list = [[[["X", 0]], 1, [1], ["+"], "x_gate0.png"]]
+    #question_list = ["x_gate0.png", "x_gate1.png", "h_gate0.png", "h_gate1.png"]
+    #choose question randomly
+    question_num = random.randint(0, len(question_list) - 1)
+    question_num = 0
+    question = Picture(question_list[question_num][4], 820, 150)
+    
+    dict1 = {"00":"+", "01":"-"}
+    
     while True:
         screen.fill((255, 255, 255))
         title.draw(screen)
@@ -123,8 +137,9 @@ def main():
         frame_question.draw(screen)
         frame_circuit.draw(screen)
         answer_box.draw(screen, answer_number)
+        question.draw(screen)
         pygame.display.update()
-
+        
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -148,7 +163,7 @@ def main():
                         
                     else:
                         print ("incorrect")
-
+                        
 if __name__=="__main__":
     main()
-
+    
