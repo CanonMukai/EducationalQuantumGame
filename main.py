@@ -41,8 +41,9 @@ def evaluate(question, answer):
 def CircleOrBatsu(is_correct, screen):
     if is_correct:
         pygame.draw.circle(screen, (255, 0, 0), (800, 200), 10, 30)
-    #else:
-        #pygame.draw.line(screen, (0, 0, 255), (800, 200), 
+    else:
+        pygame.draw.line(screen, (0, 0, 255), (800, 200), (850, 250), 10)
+        pygame.draw.line(screen, (0, 0, 255), (850, 200), (800, 250), 10)
     pygame.display.update()
     time.sleep(1)
 
@@ -89,12 +90,6 @@ class AnswerBox():
             x2, y2 = self.x0 + i * 50, self.y0
             width, height = 40, 40
             pygame.draw.rect(screen, (50, 50, 50), Rect(x2, y2, width, height), 10)
-"""
-class Question():
-    def __init__(self, question):
-        self.qestion = question
-    def draw(self, screen):
-"""
         
 def main():
     pygame.init()
@@ -139,6 +134,11 @@ def main():
                     answer = 0
                     is_correct = evaluate(questions[question_number], answer)
                     CircleOrBatsu(is_correct, screen)
+                    if is_correct:
+                        print ("correct")
+                        
+                    else:
+                        print ("incorrect")
                 if button1.collidepoint(event.pos):
                     answer = 1
                     is_correct = evaluate(questions[question_number], answer)
