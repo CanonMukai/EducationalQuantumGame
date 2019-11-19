@@ -40,7 +40,7 @@ def evaluate(question, answer):
 
 def CircleOrBatsu(is_correct, screen):
     if is_correct:
-        pygame.draw.circle(screen, (255, 0, 0), (800, 200), 10, 30)
+        pygame.draw.circle(screen, (255, 0, 0), (800, 200), 10, 3)
     else:
         pygame.draw.line(screen, (0, 0, 255), (800, 200), (850, 250), 10)
         pygame.draw.line(screen, (0, 0, 255), (850, 200), (800, 250), 10)
