@@ -3,6 +3,48 @@ import pygame
 from pygame.locals import *
 import pygame.mixer
 import sys
+from qiskit import *
+import time
+
+# input: int (0 or 1)
+# output: int (0 or 1)
+def x_gate(A):
+   q = QuantumRegister(1)
+   c = ClassicalRegister(1)
+   qc = QuantumCircuit(q,c)
+   inputdata = [A]
+   if inputdata[0] == 1:
+       qc.x(q[0])
+   qc.x(q[0])
+   qc.measure(q[0],c[0])
+   backend = Aer.get_backend('qasm_simulator')
+   job = execute(qc, backend, shots=1000)
+   result = job.result()
+   count =result.get_counts()
+   qc.draw(output='mpl')
+   answer = list(count.keys())[0]
+   a=int(answer[0])
+   return a
+
+questions = [
+    ["X", 0]
+    ]
+
+def evaluate(question, answer):
+    if question[0] == "X":
+        correct_answer = x_gate(question[1])
+        if correct_answer == answer:
+            return True
+        else:
+            return False
+
+def CircleOrBatsu(is_correct, screen):
+    if is_correct:
+        pygame.draw.circle(screen, (255, 0, 0), (800, 200), 10, 30)
+    #else:
+        #pygame.draw.line(screen, (0, 0, 255), (800, 200), 
+    pygame.display.update()
+    time.sleep(1)
 
 class Score():
     def __init__(self, x, y):
@@ -38,6 +80,15 @@ class Frame():
         pygame.draw.rect(screen, (50, 50, 50), Rect(self.x1-10, self.y0, 10, self.y1-self.y0))
         pygame.draw.rect(screen, (50, 50, 50), Rect(self.x0, self.y0, self.x1-self.x0, 10))
         pygame.draw.rect(screen, (50, 50, 50), Rect(self.x0, self.y1-10, self.x1-self.x0, 10))
+
+class AnswerBox():
+    def __init__(self, x0, y0):
+        (self.x0, self.y0) = (x0, y0)
+    def draw(self, screen, answer_number):
+        for i in range(answer_number):
+            x2, y2 = self.x0 + i * 50, self.y0
+            width, height = 40, 40
+            pygame.draw.rect(screen, (50, 50, 50), Rect(x2, y2, width, height), 10)
 """
 class Question():
     def __init__(self, question):
@@ -57,11 +108,13 @@ def main():
     text1 = font.render('1', True, (50, 50, 50))
     score = Score(500, 20)
     title = Title(20, 20)
-    #num0 = Picture("num2.png", 10, 500)
-    #num1 = Picture("num4.png", 120, 500)
     frame_game = Frame(70, 70, 700, 450)
     frame_question = Frame(750, 70, 1200, 450)
     frame_circuit = Frame(70, 500, 1200, 750)
+    answer_box = AnswerBox(850, 330)
+
+    question_number = 0
+    answer_number = 2
 
     while True:
         screen.fill((255, 255, 255))
@@ -71,11 +124,10 @@ def main():
         screen.blit(text0, (200, 300))
         screen.blit(text1, (500, 300))
         score.draw(screen)
-        #num0.draw(screen)
-        #num1.draw(screen)
         frame_game.draw(screen)
         frame_question.draw(screen)
         frame_circuit.draw(screen)
+        answer_box.draw(screen, answer_number)
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -84,9 +136,19 @@ def main():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button0.collidepoint(event.pos):
-                    print ("0")
+                    answer = 0
+                    is_correct = evaluate(questions[question_number], answer)
+                    CircleOrBatsu(is_correct, screen)
                 if button1.collidepoint(event.pos):
-                    print ("1")
+                    answer = 1
+                    is_correct = evaluate(questions[question_number], answer)
+                    CircleOrBatsu(is_correct, screen)
+                    if is_correct:
+                        print ("correct")
+                        
+                    else:
+                        print ("incorrect")
 
 if __name__=="__main__":
     main()
+
