@@ -7,6 +7,8 @@ from qiskit import *
 import time
 import random
 
+tele_list = [1,2,2,2,4,4,4]
+
 # input: int (0 or 1)
 # output: int (0 or 1)
 def x_gate(A):
@@ -26,10 +28,6 @@ def x_gate(A):
    a=int(answer[0])
    return a
 
-questions = [
-    ["X", 0]
-    ]
-
 def AddCircuit(circuit,gate):
    if gate[0] == "H":
        circuit.h(gate[1])
@@ -40,6 +38,8 @@ def AddCircuit(circuit,gate):
    elif gate[0] == "CZ":
        circuit.cz(gate[1],gate[2])
 
+# input: [["X",0],["H",1],["CX",1,2], ...]
+# output [{'001': '+'}, {'001': '+', '011': '+'}, {'001': '+', '111': '+'}, ...]
 def solve_problem(tele):
    M = len(tele)
    answer = []
@@ -94,12 +94,11 @@ def solve_problem(tele):
    return answer
 
 def evaluate(question, answer):
-    if question[0] == "X":
-        correct_answer = x_gate(question[1])
-        if correct_answer == answer:
-            return True
-        else:
-            return False
+   correct_answer = x_gate(question)
+   if correct_answer == answer:
+      return True
+   else:
+      return False
 
 def CircleOrBatsu(is_correct, screen):
    if is_correct:
@@ -127,7 +126,7 @@ class Title():
         self.sysfont = pygame.font.SysFont(None, 60)
         (self.x, self.y) = (x, y)
     def draw(self, screen):
-        img = self.sysfont.render("QQQ!", True, (0, 0, 0))
+        img = self.sysfont.render("Qiskit Shooting Game", True, (0, 0, 0))
         screen.blit(img, (self.x, self.y))
 
 class Picture():
@@ -256,66 +255,69 @@ def main():
                     ]
     #question_list = ["x_gate0.png", "x_gate1.png", "h_gate0.png", "h_gate1.png"]
     #choose question randomly
-    #question_num = random.randint(0, len(question_list) - 1)
-    question_num = 0
+    question_num = random.randint(0, len(question_list) - 1)
+    question_num = 4
+    step = 0
+    if question_num != 4:
+        step = 0
+    question = Picture(question_list[question_num][4][step], 820, 150)
+    circuit = Picture(question_list[question_num][5],150, 520)
+    transparent = Transparent(670,530,370,200,100)
+    #dict1 = {"00":"+", "01":"-"}
+    """
+    if question_num == 4 :
+        for i in range(len(question_list[question_num][0])):
+    """
+    #アンダーバーの座標とサイズを設定  Underbar(x座標, y座標, フォントサイズ)
+    if question_num == 0 or question_num == 1:
+        underbar = Underbar(998, 200, 70)
+    if question_num == 2 or question_num == 3:
+        underbar = Underbar(1002, 200, 70)
+        underbar2 = Underbar(1086, 200, 70)
+    if question_num == 4:
+        #k = question_list[question_num][1] * question_list[question_num][2][step]
+        #for i in range(k):
 
-    transparent = Transparent(670, 530, 370, 200, 100)
+        if step == 0:
+            underbar = Underbar(820, 200, 60)
+            underbar2 = Underbar(850, 200, 60)
+            underbar3 = Underbar(880, 200, 60)
+        if step == 1 or step == 2 or step == 3:
+            underbar2 = Underbar(908, 200, 40)
+            underbar3 = Underbar(928, 200, 40)
+            #二つ目の枠
+            underbar4 = Underbar(1005, 200, 40)
+            underbar5 = Underbar(1025, 200, 40)
+            underbar6 = Underbar(1045, 200, 40)
+        #tereportation45.pngのheightを30に設定
+        if step == 4 or step == 5 or step == 6 or step == 7:
+            #一つ目の枠
+            underbar = Underbar(850, 200, 30)
+            underbar2 = Underbar(864, 200, 30)
+            underbar3 = Underbar(878, 200, 30)
+            #二つ目の枠
+            underbar4 = Underbar(932, 200, 30)
+            underbar5 = Underbar(946, 200, 30)
+            underbar6 = Underbar(960, 200, 30)
+            #三つ目の枠
+            underbar7 = Underbar(1014, 200, 30)
+            underbar8 = Underbar(1028, 200, 30)
+            underbar9 = Underbar(1042, 200, 30)
+            #四つ目の枠
+            underbar10 = Underbar(1096, 200, 30)
+            underbar11 = Underbar(1110, 200, 30)
+            underbar12 = Underbar(1124, 200, 30)
+
     count = 0
     answer_dict = {}
     input1 = []
-    flag = 1
+    # for teleportation, < 3
+    count1 = 0
+    # for teleportation, < question_list[4][2][step]
+    count2 = 0
+    string = ""
 
     while True:
-        #アンダーバーの座標とサイズを設定  Underbar(x座標, y座標, フォントサイズ)
-        step = 6
-        if question_num != 4:
-            step = 0
-        question = Picture(question_list[question_num][4][step], 820, 150)
-        circuit = Picture(question_list[question_num][5],150, 520)
-
-        if question_num == 0 or question_num == 1:
-            underbar = Underbar(998, 200, 70)
-        if question_num == 2 or question_num == 3:
-            underbar = Underbar(1002, 200, 70)
-            underbar2 = Underbar(1086, 200, 70)
-        if question_num == 4:
-                #k = question_list[question_num][1] * question_list[question_num][2][step]
-                #for i in range(k):
-
-            if step == 0:
-                underbar = Underbar(820, 200, 60)
-                underbar2 = Underbar(850, 200, 60)
-                underbar3 = Underbar(880, 200, 60)
-            if step == 1 or step == 2 or step == 3:
-                    #一つ目の枠
-                underbar = Underbar(888, 200, 40)
-                underbar2 = Underbar(908, 200, 40)
-                underbar3 = Underbar(928, 200, 40)
-                    #二つ目の枠
-                underbar4 = Underbar(1005, 200, 40)
-                underbar5 = Underbar(1025, 200, 40)
-                underbar6 = Underbar(1045, 200, 40)
-                #tereportation45.pngのheightを30に設定
-            if step == 4 or step == 5 or step == 6 or step == 7:
-                    #一つ目の枠
-                underbar = Underbar(850, 200, 30)
-                underbar2 = Underbar(864, 200, 30)
-                underbar3 = Underbar(878, 200, 30)
-                    #二つ目の枠
-                underbar4 = Underbar(932, 200, 30)
-                underbar5 = Underbar(946, 200, 30)
-                underbar6 = Underbar(960, 200, 30)
-                    #三つ目の枠
-                underbar7 = Underbar(1014, 200, 30)
-                underbar8 = Underbar(1028, 200, 30)
-                underbar9 = Underbar(1042, 200, 30)
-                    #四つ目の枠
-                underbar10 = Underbar(1096, 200, 30)
-                underbar11 = Underbar(1110, 200, 30)
-                underbar12 = Underbar(1124, 200, 30)
-
-
-
         screen.fill((255, 255, 255))
         title.draw(screen)
         pygame.draw.rect(screen, (102, 149, 255), button0)
@@ -365,11 +367,11 @@ def main():
                 underbar11.draw(screen)
                 underbar12.draw(screen)
 
-
-        if(count > 0):
-            for i in range(count):
-                #print("input1 = "+ str(input1))
-                input1[i].draw(screen)
+        #underbar.draw(screen)
+        #underbar2.draw(screen)
+        #サーキットを隠す半透明
+        # transparent.draw(screen,48)
+        # pygame.display.update()
 
         for event in pygame.event.get():
            if event.type == QUIT:
@@ -381,105 +383,176 @@ def main():
                        answer = 0
                        input = Input(1000, 200, answer)
                        input.draw(screen)
-                       is_correct = evaluate(questions[question_number], answer)
+                       is_correct = evaluate(question_list[question_num][0][0][1], answer)
                        CircleOrBatsu(is_correct, screen)
                        if is_correct:
                            print ("correct")
                            score.add_score(10)
-                           input1 = []
-                           answer_dict = {}
-                           question_num = random.randint(0, 3)
-                           #question_num = 3
-                           flag = 0
                        else:
                            print ("incorrect")
-                       answer_dict = {}
                    if button1.collidepoint(event.pos):
                        answer = 1
                        input = Input(1000, 200, answer)
                        input.draw(screen)
-                       is_correct = evaluate(questions[question_number], answer)
+                       is_correct = evaluate(question_list[question_num][0][0][1], answer)
                        CircleOrBatsu(is_correct, screen)
                        if is_correct:
                           print ("correct")
                           score.add_score(10)
-                          input1 = []
-                          print("input1 = " + str(input1))
-                          question_num = random.randint(0, 3)
-                          flag = 0
                        else:
                           print ("incorrect")
-                       answer_dict = {}
                if question_num == 2 or question_num == 3:
-                   if (flag != 0):
-                       if button0.collidepoint(event.pos):
-                           answer = 0
-                           if count < 2:
-                              input1.append(Input(1005 + 84 * count, 200, answer))
-                              # for i in range(count+1):
-                              #     print("i")
-                              #     print(i)
-                              #     input1[i].draw(screen)
-                              # pygame.display.update()
-                              print (count)
-                              answer_dict[str(answer)] = question_list[question_num][3][0][count]
-                              #print ("answer_dict = " + answer_dict)
-                              if count == 1:
-                                 for i in range(count+1):
-                                    #print("input1 = "+ str(input1))
-                                    input1[i].draw(screen)
-                                 input1 = []
-                                 is_correct = evaluateH(question_list[question_num][0][0][1], answer_dict)
-                                 CircleOrBatsu(is_correct, screen)
-                                 if is_correct:
-                                    print ("correct")
-                                    score.add_score(10)
-                                    question_num = random.randint(0, 3)
-                                 else:
-                                    print ("incorrect")
-
-                                 count = 0
-                                 answer_dict = {}
-                                 break
-                              count += 1
-                       if button1.collidepoint(event.pos):
-                           answer = 1
-                           if count < 2:
-                              input1.append(Input(1005 + 84 * count, 200, answer))
-                              # for i in range(count+1):
-                              #     print("i")
-                              #     print(i)
-                              #     input1[i].draw(screen)
-                              # pygame.display.update()
-                              # print (count)
-                              # print("input1")
-                              print("press1")
-                              print(button1.collidepoint(event.pos))
-                              print(button0.collidepoint(event.pos))
-                              answer_dict[str(answer)] = question_list[question_num][3][0][count]
-                              print ("answer_dict = " + str(answer_dict))
-                              if count == 1:
-                                 for i in range(count+1):
-                                    #print("input1 = "+ str(input1))
-                                    input1[i].draw(screen)
-                                 input1 = []
-                                 is_correct = evaluateH(question_list[question_num][0][0][1], answer_dict)
-                                 CircleOrBatsu(is_correct, screen)
-                                 if is_correct:
-                                    print ("correct")
-                                    score.add_score(10)
-                                    question_num = random.randint(0, 3)
-                                 else:
-                                    print ("incorrect")
-                                 count = 0
-                                 answer_dict = {}
-                                 break
-                              count += 1
-                       print("count = "+ str(count))
-               flag = 1
-
+                   if button0.collidepoint(event.pos):
+                       answer = 0
+                       if count < 2:
+                          input1.append(Input(1000 + 100 * count, 200, answer))
+                          input1[count].draw(screen)
+                          pygame.display.update()
+                          print (count)
+                          answer_dict[str(answer)] = question_list[question_num][3][0][count]
+                          print (answer_dict)
+                          if count == 1:
+                             is_correct = evaluateH(question_list[question_num][0][0][1], answer_dict)
+                             CircleOrBatsu(is_correct, screen)
+                             if is_correct:
+                                print ("correct")
+                                score.add_score(10)
+                             else:
+                                print ("incorrect")
+                             count = 0
+                             answer_dict = {}
+                             break
+                          count += 1
+                   if button1.collidepoint(event.pos):
+                       answer = 1
+                       if count < 2:
+                          input1.append(Input(1000 + 100 * count, 200, answer))
+                          input1[count].draw(screen)
+                          pygame.display.update()
+                          print (count)
+                          answer_dict[str(answer)] = question_list[question_num][3][0][count]
+                          print (answer_dict)
+                          if count == 1:
+                             is_correct = evaluateH(question_list[question_num][0][0][1], answer_dict)
+                             CircleOrBatsu(is_correct, screen)
+                             if is_correct:
+                                print ("correct")
+                                score.add_score(10)
+                             else:
+                                print ("incorrect")
+                             count = 0
+                             answer_dict = {}
+                             break
+                          count += 1
+               if question_num == 4:
+                   print ("step = %d" % step)
+                   print ("count1 = %d, count2 = %d" % (count1, count2))
+                   # [{'001': '+'}, {'001': '+', '011': '+'}, {'001': '+', '111': '+'}, ...]
+                   correct_list = solve_problem(question_list[4][0])
+                   print (correct_list)
+                   if button0.collidepoint(event.pos):
+                       answer = 0
+                       if count1 < 3 and count2 < question_list[4][2][step]:
+                          input1.append(Input(1000 + 50 * count, 200, answer))
+                          input1[count].draw(screen)
+                          pygame.display.update()
+                          count1 += 1
+                          string += str(answer)
+                          if count1 == 3:
+                             answer_dict[string] = question_list[4][3][step][count2]
+                             count1 = 0
+                             count2 += 1
+                             string = ""
+                             #print (answer_dict)
+                             print (tele_list[step])
+                             print("count2 = %d" % count2)
+                             if count2 == tele_list[step]:
+                                print ("in")
+                                if answer_dict == correct_list[step]:
+                                   CircleOrBatsu(True, screen)
+                                   count1 = 0
+                                   count2 = 0
+                                   string = ""
+                                   answer_dict = {}
+                                   question_num = 0
+                                   step += 1
+                                   print ("step in %d" % step)
+                                   break
+                                else:
+                                   CircleOrBatsu(False, screen)
+                                   count1 = 0
+                                   count2 = 0
+                                   string = ""
+                                   answer_dict = {}
+                                   break
+                             string = ""                                                           
+                   if button1.collidepoint(event.pos):
+                       answer = 1
+                       if count1 < 3 and count2 < question_list[4][2][step]:
+                          input1.append(Input(1000 + 50 * count, 200, answer))
+                          input1[count].draw(screen)
+                          pygame.display.update()
+                          count1 += 1
+                          string += str(answer)
+                          if count1 == 3:
+                             answer_dict[string] = question_list[4][3][step][count2]
+                             count1 = 0
+                             count2 += 1
+                             string = ""
+                             print (answer_dict)
+                             print (tele_list[step])
+                             print ("count2 = %d" % count2)
+                             if count2 == tele_list[step]:
+                                print ("in")
+                                if answer_dict == correct_list[step]:
+                                   CircleOrBatsu(True, screen)
+                                   count1 = 0
+                                   count2 = 0
+                                   string = ""
+                                   answer_dict = {}
+                                   question_num = 0
+                                   step += 1
+                                   print ("step in %d" % step)
+                                   break
+                                else:
+                                   CircleOrBatsu(False, screen)
+                                   count1 = 0
+                                   count2 = 0
+                                   string = ""
+                                   answer_dict = {}
+                             string = ""                                     
         pygame.display.update()
 
+        # for event in pygame.event.get():
+        #     if event.type == QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        #     if event.type == pygame.MOUSEBUTTONDOWN:
+        #         if question_num == 0 or question_num == 1:
+        #             if button0.collidepoint(event.pos):
+        #                 answer = 0
+        #                 input = Input(1000, 200, answer, 70)
+        #                 input.draw(screen)
+        #                 is_correct = evaluate(questions[question_number], answer)
+        #                 CircleOrBatsu(is_correct, screen)
+        #                 if is_correct:
+        #                     print ("correct")
+        #                     score.add_score(10)
+        #
+        #                 else:
+        #                     print ("incorrect")
+        #             if button1.collidepoint(event.pos):
+        #                 answer = 1
+        #                 input = Input(1000, 200, answer)
+        #                 input.draw(screen)
+        #                 is_correct = evaluate(questions[question_number], answer)
+        #                 CircleOrBatsu(is_correct, screen)
+        #                 if is_correct:
+        #                     print ("correct")
+        #                     score.add_score(10)
+        #
+        #                 else:
+        #                     print ("incorrect")
 
 if __name__=="__main__":
     main()
