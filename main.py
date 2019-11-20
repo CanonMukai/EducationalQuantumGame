@@ -388,8 +388,8 @@ def main():
                            score.add_score(10)
                            input1 = []
                            answer_dict = {}
-                           question_num = random.randint(0, 3)
-                           #question_num = 3
+                           #question_num = random.randint(0, 3)
+                           question_num = 3
                            flag = 0
                        else:
                            print ("incorrect")
@@ -405,7 +405,8 @@ def main():
                           score.add_score(10)
                           input1 = []
                           print("input1 = " + str(input1))
-                          question_num = random.randint(0, 3)
+                          #question_num = random.randint(0, 3)
+                          question_num = 3
                           flag = 0
                        else:
                           print ("incorrect")
@@ -434,7 +435,8 @@ def main():
                                  if is_correct:
                                     print ("correct")
                                     score.add_score(10)
-                                    question_num = random.randint(0, 3)
+                                    #question_num = random.randint(0, 3)
+                                    question_num = 3
                                  else:
                                     print ("incorrect")
 
@@ -468,7 +470,8 @@ def main():
                                  if is_correct:
                                     print ("correct")
                                     score.add_score(10)
-                                    question_num = random.randint(0, 3)
+                                    #uestion_num = random.randint(0, 3)
+                                    question_num = 3
                                  else:
                                     print ("incorrect")
                                  count = 0
